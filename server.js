@@ -1,12 +1,11 @@
 var express = require("express")
 var app = express()
-const {MongoClient} = require('mongodb');
-const uri = 'mongodb+srv://adityacalvin:Usainbolt958@cluster0.titln9f.mongodb.net/?retryWrites=true&w=majority';
-const client = new MongoClient(uri);
-let dbcollection;
+require('./dbConnection');
+let router = require('./route/route');
 app.use(express.static(__dirname+'/public'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use('/', router);
 
 const cardList = [
     {
@@ -23,23 +22,11 @@ const cardList = [
     }
 ];
 
-app.get('/api/projects',(req,res) => {
-   res.json({statusCode: 200, data: cardList, message:"Success"})
-})
 
-function dbConnection(collectionName) {
-    client.connect(err => {
-        dbcollection = client.db().collection(collectionName);
-        if (!err) {
-            console.log('DB connected');
-        }
-        else {
-            console.log(err);
-        }
-    });
-}
+
+
 var port = process.env.port || 3000;
 app.listen(port,()=>{
     console.log("App listening to: "+port)
-    dbConnection('Cats');
+    
 });
